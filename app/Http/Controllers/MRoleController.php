@@ -6,17 +6,20 @@ use App\Models\MRole;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class MRoleController extends Controller
 {
   // READ (All) - GET /api/roles
   public function index(){
+      Log::info("index()");
       $roles = MRole::where('is_delete', false)->get(); // Filter active roles
       return response()->json($roles, 200);
   }
 
   // READ (One) - GET /api/roles/{mRole}
   public function show(MRole $mRole){
+    Log::info("show()");
       if ($mRole->IsDelete) {
           return response()->json(['message' => 'Role not found.'], 404);
       }
@@ -25,6 +28,7 @@ class MRoleController extends Controller
 
   // CREATE - POST /api/roles
   public function store(Request $request){
+    Log::info("store()");
       $validator = Validator::make($request->all(), [
           'name' => 'required|string|max:20',
           'code' => 'required|string|max:20|unique:m_roles,code',
@@ -48,6 +52,7 @@ class MRoleController extends Controller
 
   // UPDATE - PUT/PATCH /api/roles/{mRole}
   public function update(Request $request, MRole $mRole){
+    Log::info("update()");
       if ($mRole->IsDelete) {
           return response()->json(['message' => 'Role not found.'], 404);
       }
@@ -75,6 +80,7 @@ class MRoleController extends Controller
 
   // DELETE (Soft Delete) - DELETE /api/roles/{mRole}
   public function destroy(MRole $mRole){
+    Log::info("destroy()");
       if ($mRole->IsDelete) {
           return response()->json(['message' => 'Role not found.'], 404);
       }
