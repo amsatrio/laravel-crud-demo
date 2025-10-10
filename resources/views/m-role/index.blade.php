@@ -29,6 +29,7 @@
             axios.get(API_URL)
                 .then(response => {
                     tableBody.innerHTML = '';
+                    response = response.data;
                     response.data.forEach(role => {
                         const row = tableBody.insertRow();
                         row.innerHTML = `

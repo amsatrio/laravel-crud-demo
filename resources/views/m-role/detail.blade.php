@@ -32,7 +32,7 @@
         // Fetch current role data
         axios.get(API_URL)
             .then(response => {
-                const role = response.data;
+                const role = response.data.data;
                 document.getElementById('name').value = role.name || '';
                 document.getElementById('code').value = role.code || '';
                 document.getElementById('level').value = role.level || '';

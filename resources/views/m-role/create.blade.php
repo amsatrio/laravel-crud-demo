@@ -42,7 +42,7 @@
                 if (error.response && error.response.status === 422) {
                     let errorsHtml = '<ul>';
                     // Display validation errors
-                    Object.values(error.response.data).forEach(messages => {
+                    Object.values(error.response.data.errors).forEach(messages => {
                         messages.forEach(message => {
                             errorsHtml += `<li>${message}</li>`;
                         });

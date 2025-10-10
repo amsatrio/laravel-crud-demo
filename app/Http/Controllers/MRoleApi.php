@@ -2,28 +2,33 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Traits\ApiResponseTrait;
 use App\Models\MRole;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\ValidationException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-class MRoleController extends Controller
+class MRoleApi extends Controller
 {
+    use ApiResponseTrait;
+
   // READ (All) - GET /api/roles
   public function index(){
       Log::info("index()");
-      $roles = MRole::where('is_delete', false)->get(); // Filter active roles
-      return response()->json($roles, 200);
+      $roles = MRole::where('is_delete', false)->get(); 
+      return $this->successResponse($roles);
   }
 
   // READ (One) - GET /api/roles/{mRole}
   public function show(MRole $mRole){
     Log::info("show()");
       if ($mRole->IsDelete) {
-          return response()->json(['message' => 'Role not found.'], 404);
+          throw new NotFoundHttpException();
       }
-      return response()->json($mRole, 200);
+      return $this->successResponse($mRole);
   }
 
   // CREATE - POST /api/roles
@@ -36,10 +41,10 @@ class MRoleController extends Controller
       ]);
 
       if ($validator->fails()) {
-          return response()->json($validator->errors(), 422);
+        return $this->validationErrorResponse(new ValidationException($validator));
       }
 
-      $role = MRole::create([
+      $mRole = MRole::create([
           'name' => $request->name,
           'code' => $request->code,
           'level' => $request->level,
@@ -47,14 +52,14 @@ class MRoleController extends Controller
           'created_on' => now(),
       ]);
 
-      return response()->json($role, 201);
+      return $this->successResponse($mRole, 201);
   }
 
   // UPDATE - PUT/PATCH /api/roles/{mRole}
   public function update(Request $request, MRole $mRole){
     Log::info("update()");
       if ($mRole->IsDelete) {
-          return response()->json(['message' => 'Role not found.'], 404);
+        return $this->errorResponse("data not found", 404);
       }
       
       $validator = Validator::make($request->all(), [
@@ -64,7 +69,7 @@ class MRoleController extends Controller
       ]);
 
       if ($validator->fails()) {
-          return response()->json($validator->errors(), 422);
+        return $this->validationErrorResponse(new ValidationException($validator));
       }
 
       $mRole->update([
@@ -75,14 +80,14 @@ class MRoleController extends Controller
           'modified_on' => now(),
       ]);
 
-      return response()->json($mRole, 200);
+      return $this->successResponse($mRole);
   }
 
   // DELETE (Soft Delete) - DELETE /api/roles/{mRole}
   public function destroy(MRole $mRole){
     Log::info("destroy()");
       if ($mRole->IsDelete) {
-          return response()->json(['message' => 'Role not found.'], 404);
+        return $this->errorResponse("data not found", 404);
       }
       
       $mRole->update([
@@ -91,6 +96,6 @@ class MRoleController extends Controller
           'is_delete' => true,
       ]);
 
-      return response()->json(['message' => 'Role deleted successfully'], 204);
+      return $this->successResponse($mRole, 204);
   }
 }

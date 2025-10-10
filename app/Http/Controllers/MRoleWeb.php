@@ -3,7 +3,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Log;
 
-class MRoleWebController extends Controller {
+class MRoleWeb extends Controller {
         // Show the list view (Index)
         public function index(){
             Log::info("index()");

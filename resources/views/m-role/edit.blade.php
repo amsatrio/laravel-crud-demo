@@ -34,7 +34,7 @@
         // Fetch current role data
         axios.get(API_URL)
             .then(response => {
-                const role = response.data;
+                const role = response.data.data;
                 document.getElementById('name').value = role.name || '';
                 document.getElementById('code').value = role.code || '';
                 document.getElementById('level').value = role.level || '';
@@ -63,7 +63,7 @@
                     if (error.response && error.response.status === 422) {
                         let errorsHtml = '<ul>';
                         // Display validation errors
-                        Object.values(error.response.data).forEach(messages => {
+                        Object.values(error.response.data.errors).forEach(messages => {
                             messages.forEach(message => {
                                 errorsHtml += `<li>${message}</li>`;
                             });
