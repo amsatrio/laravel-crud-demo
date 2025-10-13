@@ -1,0 +1,29 @@
+@base_url=http://localhost:8000
+
+###
+GET {{base_url}}/api/m-biodata
+
+###
+GET {{base_url}}/api/m-biodata/1
+
+###
+POST {{base_url}}/api/m-biodata
+Content-Type: application/json
+
+{
+    "fullname": "nama saya",
+    "mobile_phone": "087653424242"
+}
+
+###
+PUT {{base_url}}/api/m-biodata/1
+Content-Type: application/json
+
+{
+    "fullname": "nama saya update",
+    "mobile_phone": "087653424242",
+    "is_delete": false
+}
+
+###
+DELETE {{base_url}}/api/m-biodata/1

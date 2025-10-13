@@ -9,8 +9,8 @@ class MRole extends Model
 {
     use HasFactory;
 
-    // Assuming the table name is 'm_roles' based on the model name
-    protected $table = 'm_roles';
+    // Assuming the table name is 'm_role' based on the model name
+    protected $table = 'm_role';
 
     // Disable Laravel's default timestamps and soft delete columns to manage them manually
     // However, for typical Laravel projects, let the framework handle created_at, updated_at
@@ -22,6 +22,7 @@ class MRole extends Model
         'name',
         'code',
         'level',
+        
         'created_by',
         'created_on',
         'modified_by',

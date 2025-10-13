@@ -1,4 +1,32 @@
 @base_url=http://localhost:8000
 
 ###
-GET {{base_url}}/api/m-roles
+GET {{base_url}}/api/m-role
+
+###
+GET {{base_url}}/api/m-role/4
+
+###
+POST {{base_url}}/api/m-role
+Content-Type: application/json
+
+{
+    "name": "admin",
+    "code": "admin",
+    "level": 1,
+    "is_delete": false
+}
+
+###
+PUT {{base_url}}/api/m-role/3
+Content-Type: application/json
+
+{
+    "name": "admintes",
+    "code": "admin",
+    "level": 1,
+    "is_delete": true
+}
+
+###
+DELETE {{base_url}}/api/m-role/3
