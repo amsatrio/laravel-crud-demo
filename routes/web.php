@@ -28,3 +28,10 @@ Route::controller(MRoleApi::class)->group(function () {
 //     Route::get('/web/m-biodatas/edit/{id}', 'edit')->name('web-m-biodatas.edit');
 //     Route::get('/web/m-biodatas/detail/{id}', 'detail')->name('web-m-biodatas.detail');
 // });
+Route::controller(MBiodataApi::class)->group(function () {
+    Route::get("/api/m-biodata", "index")->name("api-mbiodata.index");
+    Route::get("/api/m-biodata/{id}", "show")->name("api-mbiodata.show");
+    Route::post("/api/m-biodata", "store")->name("api-mbiodata.store");
+    Route::put("/api/m-biodata/{id}", "update")->name("api-mbiodata.update");
+    Route::delete("/api/m-biodata/{id}", "destroy")->name("api-mbiodata.destroy");
+});
