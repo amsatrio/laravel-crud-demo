@@ -1,7 +1,11 @@
 @base_url=http://localhost:8000
 
 ###
-GET {{base_url}}/api/m-biodata
+GET {{base_url}}/api/m-biodata?page=0&size=5
+
+###
+GET {{base_url}}/api/m-biodata?page=0&size=3&sort=[{"id":"fullname", "desc":false}]&filter=[{"id":"fullname", "value":"m", "matchMode":"CONTAINS"}]
+
 
 ###
 GET {{base_url}}/api/m-biodata/1

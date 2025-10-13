@@ -10,11 +10,13 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
+use function Illuminate\Log\log;
+
 class MRoleApi extends Controller
 {
     use ApiResponseTrait;
 
-    // READ (All) - GET /api/m-role
+    // READ (Pagination) - GET /api/m-role
     public function index(Request $request)
     {
         $page = $request->input('page', 0) + 1;
@@ -50,7 +52,23 @@ class MRoleApi extends Controller
             $filter = json_decode($filter, true);
         }
         if (!empty($filter) && is_array($filter)) {
-            
+            for ($i = 0; $i < count($filter); $i++) {
+
+                $filterKey = $filter[$i]['id'];
+                $filterValue = $filter[$i]['value'];
+                $filterOperation = $filter[$i]['matchMode'];
+
+                switch ($filterOperation) {
+                    case "EQUALS":
+                        $query->where($filterKey, '=', $filterValue);
+                        break;
+                    case "CONTAINS":
+                        $query->where($filterKey, 'like', '%'.$filterValue.'%');
+                        break;
+                    default:
+                        break;
+                }
+            }
         }
 
         // PAGINATING
