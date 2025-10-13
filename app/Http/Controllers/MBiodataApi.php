@@ -6,7 +6,6 @@ use App\Http\Traits\ApiResponseTrait;
 use App\Models\MBiodata;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
@@ -14,18 +13,84 @@ class MBiodataApi extends Controller
 {
     use ApiResponseTrait;
 
-    // READ (All) - GET /api/m-biodata
-    public function index()
+    // READ (Pagination) - GET /api/m-biodata
+    public function index(Request $request)
     {
-        $mBiodatas = MBiodata::all();
+        $page = $request->input('page', 0) + 1;
+        $size = $request->input('size', 10);
+        $size = max(1, (int) $size);
+        $sort = $request->input('sort', []);
+        $filter = $request->input('filter', []);
+        $search = $request->input('search');
 
-        return $this->successResponse($mBiodatas);
+        // INITIALIZE QUERY
+        $query = MBiodata::query();
+
+        // GLOBAL SEARCH
+        if ($search) {
+            $query->where('fullname', 'like', '%'.$search.'%');
+            $query->where('mobile_phone', 'like', '%'.$search.'%');
+            $query->where('image_path', 'like', '%'.$search.'%');
+        }
+
+        // SORTING
+        if (is_string($sort)) {
+            $sort = json_decode($sort, true);
+        }
+        if (! empty($sort) && is_array($sort) && isset($sort[0])) {
+            $sort = $sort[0];
+            if (isset($sort['id'])) {
+                $sortDirection = $sort['desc'] ? 'desc' : 'asc';
+                $query->orderBy($sort['id'], $sortDirection);
+            }
+        }
+
+        // FILTERING
+        if (is_string($filter)) {
+            $filter = json_decode($filter, true);
+        }
+        if (! empty($filter) && is_array($filter)) {
+            for ($i = 0; $i < count($filter); $i++) {
+
+                $filterKey = $filter[$i]['id'];
+                $filterValue = $filter[$i]['value'];
+                $filterOperation = $filter[$i]['matchMode'];
+
+                switch ($filterOperation) {
+                    case 'EQUALS':
+                        $query->where($filterKey, '=', $filterValue);
+                        break;
+                    case 'CONTAINS':
+                        $query->where($filterKey, 'like', '%'.$filterValue.'%');
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+
+        // PAGINATING
+        $roles = $query->paginate(
+            $size,
+            ['*'], // Columns to select
+            'page', // Name of the page query parameter (it's 'page' by default)
+            $page  // The current page number
+        );
+
+        // RESPONSE
+        $response = [
+            'totalOfPages' => $roles->lastPage(),
+            'totalOfElements' => $roles->total(),
+            'content' => $roles->items(),
+        ];
+
+        return $this->successResponse($response);
     }
 
     // READ (One) - GET /api/m-biodata/{id}
     public function show(string $id)
     {
-        $mBiodata = MBiodata::where("id", $id)->firstOrFail();
+        $mBiodata = MBiodata::where('id', $id)->firstOrFail();
 
         return $this->successResponse($mBiodata);
     }
@@ -68,8 +133,7 @@ class MBiodataApi extends Controller
             return $this->validationErrorResponse(new ValidationException($validator));
         }
 
-        $mBiodata = MBiodata::where("id", $id)->firstOrFail();
-
+        $mBiodata = MBiodata::where('id', $id)->firstOrFail();
 
         $mBiodata->update([
             'fullname' => $request->fullname,
@@ -99,7 +163,7 @@ class MBiodataApi extends Controller
     // DELETE - DELETE /api/m-biodata/{id}
     public function destroy(string $id)
     {
-        $mBiodata = MBiodata::where("id", $id)->firstOrFail();
+        $mBiodata = MBiodata::where('id', $id)->firstOrFail();
 
         $mBiodata->delete();
 
