@@ -12,9 +12,16 @@ use Illuminate\Support\Facades\Route;
 //     Route::get('/web/m-roles/edit/{id}', 'edit')->name('web-m-roles.edit');
 //     Route::get('/web/m-roles/detail/{id}', 'detail')->name('web-m-roles.detail');
 // });
+Route::controller(MRoleApi::class)->group(function () {
+    Route::get("/api/m-role", "index")->name("api-mrole.index");
+    Route::get("/api/m-role/{id}", "show")->name("api-mrole.show");
+    Route::post("/api/m-role", "store")->name("api-mrole.store");
+    Route::put("/api/m-role/{id}", "update")->name("api-mrole.update");
+    Route::delete("/api/m-role/{id}", "destroy")->name("api-mrole.destroy");
+});
 
 
-Route::apiResource('/api/m-biodata', MBiodataApi::class);
+// Route::apiResource('/api/m-biodata', MBiodataApi::class);
 // Route::controller(MBiodataWeb::class)->group(function () {
 //     Route::get('/web/m-biodatas', 'index')->name('web-m-biodatas.index');
 //     Route::get('/web/m-biodatas/create', 'create')->name('web-m-biodatas.create');
