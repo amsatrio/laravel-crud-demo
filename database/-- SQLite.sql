@@ -1,3 +1,14 @@
+-- SQLite
+SELECT id, name, actions, code, created_by, created_on, modified_by, modified_on
+FROM m_menu;
+
+INSERT INTO m_menu(id, name, actions, code, created_by, created_on, modified_by, modified_on)
+VALUES (1, "m-role", "index", "", 0, datetime('now'), null, null);
+
+delete from m_menu;
+
+UPDATE m_menu
+SET code = '
 @extends("layouts.app")
 @section("content")
     <div class="container">
@@ -134,3 +145,5 @@
         });
     </script>
 @endsection
+'
+WHERE id=1;

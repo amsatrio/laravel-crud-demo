@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\MBiodataApi;
+use App\Http\Controllers\MMenuController;
 use App\Http\Controllers\MRoleApi;
 use App\Http\Controllers\MRoleWeb;
 use Illuminate\Support\Facades\Route;
@@ -34,4 +35,11 @@ Route::controller(MBiodataApi::class)->group(function () {
     Route::post("/api/m-biodata", "store")->name("api-mbiodata.store");
     Route::put("/api/m-biodata/{id}", "update")->name("api-mbiodata.update");
     Route::delete("/api/m-biodata/{id}", "destroy")->name("api-mbiodata.destroy");
+});
+
+
+Route::controller(MMenuController::class)->group(function () {
+    Route::get("{slug}/{action}", 'slug');
+    Route::get("debug", 'debug');
+    Route::get("debug-update", 'debug_update');
 });
