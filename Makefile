@@ -8,4 +8,4 @@ migrate-fresh:
 	php artisan migrate:fresh
 
 create-controller-model-migration-seeder:
-	php artisan make:model MRole -rms
+	php artisan make:model MMenu -rms
